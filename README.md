@@ -59,19 +59,23 @@ Complexity is earned, not assumed.
 ---
 
 ## Project Structure
+```
 yoke/
 ├── CLAUDE.md              # Agent constitution — read this first
+├── pyproject.toml         # Dependencies and project metadata
 ├── .claude/commands/      # Slash commands: /plan, /eval-first, /review
 ├── src/
-│   ├── ingestion/         # Document pipeline and chunking
-│   ├── retrieval/         # Hybrid search (dense + BM25 + reranking)
-│   ├── agent/             # LangGraph orchestration and tools
-│   ├── memory/            # Persistent memory layer
-│   └── api/               # FastAPI endpoints
+│   └── yoke/              # Installable package (import yoke)
+│       ├── ingestion/     # Document pipeline and chunking
+│       ├── retrieval/     # Hybrid search (dense + BM25 + reranking)
+│       ├── agent/         # LangGraph orchestration and tools
+│       ├── memory/        # Persistent memory layer
+│       └── api/           # FastAPI endpoints
 ├── evals/                 # Eval cases, baselines, and regression suite
 ├── docs/
-│   └── architecture.md    # Architecture decision records
+│   └── plans/             # Implementation plans
 └── tests/
+```
 
 ---
 

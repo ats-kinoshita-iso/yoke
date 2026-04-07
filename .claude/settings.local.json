@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync:*)",
+      "Bash(where uv:*)",
+      "Read(//c/Users/akino/yoke/$USERPROFILE/.local/bin/**)",
+      "Read(//c/Users/akino/yoke/$USERPROFILE/.cargo/bin/**)",
+      "Read(//c/Users/akino/.local/**)",
+      "Bash(powershell.exe -Command \"Get-Command uv -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -ExecutionPolicy ByPass -Command \"irm https://astral.sh/uv/install.ps1 | iex\")",
+      "Bash(export PATH=\"$USERPROFILE/.local/bin:$PATH\")",
+      "Bash(uv run:*)",
+      "Bash(for d:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/akino/yoke/src/yoke/**)",
+      "Bash(done)",
+      "Bash(python -c \"from yoke.baseline import ask; print\\(''baseline OK''\\)\")",
+      "Bash(python -c \"from evals.phase0_eval import QA_PAIRS, CALIBRATION_CONTROLS, JudgeScore; print\\(f''eval OK: {len\\(QA_PAIRS\\)} QA pairs, {len\\(CALIBRATION_CONTROLS\\)} controls''\\)\")",
+      "Bash(where python3:*)",
+      "Bash(where python:*)",
+      "Bash(ls C:/Users/akino/.local/bin/uv*)",
+      "Bash(C:/Users/akino/.local/bin/uv run:*)",
+      "Bash(uv add:*)",
+      "Bash(python -c \":*)",
+      "Bash(uv run python -c \":*)",
+      "Bash(PYTHONIOENCODING=utf-8 uv run --extra dev python -m evals.phase0_math_eval)"
+    ]
+  }
+}
