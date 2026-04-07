@@ -1,14 +1,15 @@
 """Phase 0 baseline eval — LLM-as-judge scoring for naive context stuffing."""
 
+import asyncio
 import json
+import time
 from pathlib import Path
 
 import anthropic
-import pytest
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from yoke.baseline import ask
+from yoke.baseline import ask, MODEL as BASELINE_MODEL, SYSTEM_PROMPT as BASELINE_SYSTEM
 
 load_dotenv(override=True)
 
@@ -107,6 +108,8 @@ JUDGE_TOOL = {
     },
 }
 
+DEFAULT_JUDGE_MODEL = "claude-haiku-4-5-20251001"
+
 JUDGE_SYSTEM = (
     "You are an evaluation judge. You will be given a question, the expected answer, "
     "the model's actual answer, and the source context. Score the actual answer using "
@@ -121,31 +124,98 @@ JUDGE_SYSTEM = (
 )
 
 
-def judge(question: str, expected: str, actual: str, context: str) -> JudgeScore:
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        temperature=0,
-        max_tokens=512,
-        system=JUDGE_SYSTEM,
-        tools=[JUDGE_TOOL],
-        tool_choice={"type": "tool", "name": "score_answer"},
-        messages=[
-            {
-                "role": "user",
-                "content": (
-                    f"Question: {question}\n\n"
-                    f"Expected answer: {expected}\n\n"
-                    f"Actual answer: {actual}\n\n"
-                    f"Source context:\n{context}"
-                ),
-            }
-        ],
-    )
+# ---------- Async helpers ----------
+
+_semaphore: asyncio.Semaphore | None = None
+
+
+def _get_semaphore() -> asyncio.Semaphore:
+    global _semaphore
+    if _semaphore is None:
+        _semaphore = asyncio.Semaphore(5)
+    return _semaphore
+
+
+async def _async_ask(client: anthropic.AsyncAnthropic, question: str, context: str) -> str:
+    async with _get_semaphore():
+        message = await client.messages.create(
+            model=BASELINE_MODEL,
+            temperature=0,
+            max_tokens=1024,
+            system=BASELINE_SYSTEM,
+            messages=[
+                {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"}
+            ],
+        )
+    return message.content[0].text
+
+
+async def _async_judge(
+    client: anthropic.AsyncAnthropic,
+    question: str,
+    expected: str,
+    actual: str,
+    context: str,
+    model: str = DEFAULT_JUDGE_MODEL,
+) -> JudgeScore:
+    async with _get_semaphore():
+        message = await client.messages.create(
+            model=model,
+            temperature=0,
+            max_tokens=512,
+            system=JUDGE_SYSTEM,
+            tools=[JUDGE_TOOL],
+            tool_choice={"type": "tool", "name": "score_answer"},
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        f"Question: {question}\n\n"
+                        f"Expected answer: {expected}\n\n"
+                        f"Actual answer: {actual}\n\n"
+                        f"Source context:\n{context}"
+                    ),
+                }
+            ],
+        )
     for block in message.content:
         if block.type == "tool_use":
             return JudgeScore(**block.input)
     raise ValueError("Judge did not return a tool_use block")
+
+
+async def _eval_one(
+    client: anthropic.AsyncAnthropic,
+    pair: dict[str, str],
+    context: str,
+    judge_model: str = DEFAULT_JUDGE_MODEL,
+) -> dict:
+    actual = await _async_ask(client, pair["question"], context)
+    score = await _async_judge(
+        client, pair["question"], pair["expected_answer"], actual, context,
+        model=judge_model,
+    )
+    return {
+        "question": pair["question"],
+        "category": pair["category"],
+        "expected_answer": pair["expected_answer"],
+        "actual_answer": actual,
+        "faithfulness": score.faithfulness,
+        "relevance": score.relevance,
+        "reasoning": score.reasoning,
+    }
+
+
+async def _calibrate_one(
+    client: anthropic.AsyncAnthropic,
+    control: dict[str, str],
+    context: str,
+    judge_model: str = DEFAULT_JUDGE_MODEL,
+) -> JudgeScore:
+    return await _async_judge(
+        client, control["question"], control["expected_answer"],
+        control["bad_answer"], context, model=judge_model,
+    )
 
 
 # ---------- Helpers ----------
@@ -181,15 +251,14 @@ CALIBRATION_CONTROLS = [
 class TestPhase0Calibration:
     """Verify the judge scores intentionally wrong answers below 3."""
 
-    def test_judge_catches_hallucination(self) -> None:
+    async def test_judge_catches_hallucination(self, judge_model: str) -> None:
         context = _load_context()
-        for control in CALIBRATION_CONTROLS:
-            score = judge(
-                control["question"],
-                control["expected_answer"],
-                control["bad_answer"],
-                context,
-            )
+        client = anthropic.AsyncAnthropic()
+        scores = await asyncio.gather(*(
+            _calibrate_one(client, control, context, judge_model=judge_model)
+            for control in CALIBRATION_CONTROLS
+        ))
+        for control, score in zip(CALIBRATION_CONTROLS, scores):
             assert score.faithfulness < 3, (
                 f"Judge failed to catch hallucination: {control['question']} "
                 f"scored faithfulness={score.faithfulness}"
@@ -199,22 +268,15 @@ class TestPhase0Calibration:
 class TestPhase0Baseline:
     """Run all 10 QA pairs through the baseline and score them."""
 
-    def test_baseline_eval(self) -> None:
+    async def test_baseline_eval(self, judge_model: str) -> None:
+        t0 = time.perf_counter()
         context = _load_context()
-        results = []
+        client = anthropic.AsyncAnthropic()
 
-        for pair in QA_PAIRS:
-            actual = ask(pair["question"], DOCS_DIR)
-            score = judge(pair["question"], pair["expected_answer"], actual, context)
-            results.append({
-                "question": pair["question"],
-                "category": pair["category"],
-                "expected_answer": pair["expected_answer"],
-                "actual_answer": actual,
-                "faithfulness": score.faithfulness,
-                "relevance": score.relevance,
-                "reasoning": score.reasoning,
-            })
+        results = await asyncio.gather(*(
+            _eval_one(client, pair, context, judge_model=judge_model)
+            for pair in QA_PAIRS
+        ))
 
         # Compute summary
         avg_faith = sum(r["faithfulness"] for r in results) / len(results)
@@ -226,6 +288,7 @@ class TestPhase0Baseline:
 
         summary = {
             "phase": "phase0_baseline",
+            "judge_model": judge_model,
             "total_questions": len(results),
             "average_faithfulness": round(avg_faith, 2),
             "average_relevance": round(avg_rel, 2),
@@ -235,8 +298,9 @@ class TestPhase0Baseline:
         }
 
         # Print summary
+        elapsed = time.perf_counter() - t0
         print("\n")
-        print("Phase 0 Baseline Eval Results")
+        print(f"Phase 0 Baseline Eval Results  (judge: {judge_model})")
         print("=" * 50)
         for r in results:
             cat = r["category"]
@@ -248,6 +312,7 @@ class TestPhase0Baseline:
         print(f"  Average faithfulness: {avg_faith:.1f}")
         print(f"  Average relevance:    {avg_rel:.1f}")
         print(f"  Unanswerable correct: {unanswerable_correct}/{len(unanswerable)}")
+        print(f"  Wall-clock time:      {elapsed:.1f}s")
         print()
 
         # Write results JSON
@@ -262,53 +327,59 @@ class TestPhase0Baseline:
 
 # ---------- Standalone runner ----------
 
-if __name__ == "__main__":
+async def _main() -> None:
+    import argparse
     import sys
 
-    context = _load_context()
+    parser = argparse.ArgumentParser(description="Phase 0 baseline eval")
+    parser.add_argument(
+        "--judge-model",
+        default=DEFAULT_JUDGE_MODEL,
+        help="Model to use for LLM-as-judge scoring (default: %(default)s)",
+    )
+    args = parser.parse_args()
+    jm = args.judge_model
 
+    t0 = time.perf_counter()
+    context = _load_context()
+    client = anthropic.AsyncAnthropic()
+
+    print(f"Judge model: {jm}\n")
     print("=== Judge Calibration ===\n")
-    for control in CALIBRATION_CONTROLS:
-        score = judge(
-            control["question"],
-            control["expected_answer"],
-            control["bad_answer"],
-            context,
-        )
+    cal_scores = await asyncio.gather(*(
+        _calibrate_one(client, control, context, judge_model=jm)
+        for control in CALIBRATION_CONTROLS
+    ))
+    for control, score in zip(CALIBRATION_CONTROLS, cal_scores):
         status = "PASS" if score.faithfulness < 3 else "FAIL"
         print(f"  [{status}] faithfulness={score.faithfulness}  \"{control['question'][:50]}\"")
         print(f"         {score.reasoning}\n")
 
     print("=== Baseline Eval ===\n")
-    results = []
-    for pair in QA_PAIRS:
-        actual = ask(pair["question"], DOCS_DIR)
-        score = judge(pair["question"], pair["expected_answer"], actual, context)
-        results.append({
-            "question": pair["question"],
-            "category": pair["category"],
-            "expected_answer": pair["expected_answer"],
-            "actual_answer": actual,
-            "faithfulness": score.faithfulness,
-            "relevance": score.relevance,
-            "reasoning": score.reasoning,
-        })
-        cat = pair["category"]
-        print(f"  [{cat:<13}] faithfulness={score.faithfulness} relevance={score.relevance}  \"{pair['question'][:60]}\"")
+    results = await asyncio.gather(*(
+        _eval_one(client, pair, context, judge_model=jm) for pair in QA_PAIRS
+    ))
+
+    for r in results:
+        cat = r["category"]
+        print(f"  [{cat:<13}] faithfulness={r['faithfulness']} relevance={r['relevance']}  \"{r['question'][:60]}\"")
 
     avg_faith = sum(r["faithfulness"] for r in results) / len(results)
     avg_rel = sum(r["relevance"] for r in results) / len(results)
     unanswerable = [r for r in results if r["category"] == "unanswerable"]
     unanswerable_correct = sum(1 for r in unanswerable if r["faithfulness"] >= 4)
 
+    elapsed = time.perf_counter() - t0
     print()
     print("-" * 50)
     print(f"  Average faithfulness: {avg_faith:.1f}")
     print(f"  Average relevance:    {avg_rel:.1f}")
     print(f"  Unanswerable correct: {unanswerable_correct}/{len(unanswerable)}")
+    print(f"  Wall-clock time:      {elapsed:.1f}s")
 
     summary = {
         "phase": "phase0_baseline",
+        "judge_model": jm,
         "total_questions": len(results),
         "average_faithfulness": round(avg_faith, 2),
         "average_relevance": round(avg_rel, 2),
@@ -323,3 +394,7 @@ if __name__ == "__main__":
 
     if avg_faith < 3.0 or avg_rel < 3.0:
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    asyncio.run(_main())

@@ -42,6 +42,66 @@ def extract_pdf_pages(pdf_path: Path, start: int, end: int) -> str:
     return _normalize("\n".join(parts))
 
 
+def extract_pdf_with_page_map(
+    pdf_path: Path,
+) -> tuple[str, list[int]]:
+    """Extract all text from a PDF with per-character page number mapping.
+
+    Returns:
+        Tuple of (full_text, page_numbers) where page_numbers[i] is the
+        1-indexed page number for character i in full_text.
+    """
+    doc = pymupdf.open(pdf_path)
+    parts: list[str] = []
+    page_map: list[int] = []
+
+    for page_idx in range(doc.page_count):
+        page_num = page_idx + 1  # 1-indexed
+        raw_text = doc[page_idx].get_text()
+        normalized = _normalize(raw_text)
+        parts.append(normalized)
+        page_map.extend([page_num] * len(normalized))
+
+    # Join with newlines (which also need page attribution)
+    full_parts: list[str] = []
+    full_map: list[int] = []
+    for i, (part, page_num) in enumerate(
+        zip(parts, [p + 1 for p in range(doc.page_count)])
+    ):
+        if i > 0:
+            full_parts.append("\n")
+            full_map.append(page_num)
+        full_parts.append(part)
+        full_map.extend([page_num] * len(part))
+
+    full_text = "".join(full_parts)
+    # Final normalization pass may change length, so rebuild map
+    normalized_text = _normalize(full_text)
+    if len(normalized_text) == len(full_text):
+        return normalized_text, full_map
+
+    # If normalization changed length (collapsed newlines), rebuild map
+    # by walking both strings in parallel
+    new_map: list[int] = []
+    old_idx = 0
+    for char in normalized_text:
+        if old_idx < len(full_map):
+            new_map.append(full_map[old_idx])
+        else:
+            new_map.append(full_map[-1] if full_map else 1)
+        # Advance old_idx to match
+        if old_idx < len(full_text) and full_text[old_idx] == char:
+            old_idx += 1
+        else:
+            # Normalization removed chars; skip ahead in original
+            while old_idx < len(full_text) and full_text[old_idx] != char:
+                old_idx += 1
+            if old_idx < len(full_text):
+                old_idx += 1
+
+    return normalized_text, new_map
+
+
 def extract_pdf_chapter(pdf_path: Path, chapter: int) -> str:
     """Extract a chapter using the PDF's table of contents.
 
