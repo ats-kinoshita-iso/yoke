@@ -1,0 +1,100 @@
+{
+  "phase": "phase0_baseline",
+  "total_questions": 10,
+  "average_faithfulness": 5.0,
+  "average_relevance": 5.0,
+  "unanswerable_correct": 2,
+  "unanswerable_total": 2,
+  "results": [
+    {
+      "question": "What port does the API Gateway run on?",
+      "category": "direct",
+      "expected_answer": "The API Gateway runs on port 8090.",
+      "actual_answer": "According to the documentation, the API Gateway runs on port 8090.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context. The api-reference.md document clearly states \"The Yoke API is served by the API Gateway on port 8090\" and the architecture.md document confirms this in the service topology table showing \"API Gateway | 8090 | Public-facing HTTP API\". The answer directly addresses the question about what port the API Gateway runs on, providing the correct port number (8090) with appropriate attribution to the documentation."
+    },
+    {
+      "question": "What is the default value of YOKE_EMBEDDING_BATCH_SIZE?",
+      "category": "direct",
+      "expected_answer": "The default value is 64.",
+      "actual_answer": "According to the documentation, the default value of YOKE_EMBEDDING_BATCH_SIZE is 64.\n\nThis is mentioned in two places:\n1. In the getting-started.md file under \"Optional\" environment variables\n2. In the architecture.md file under \"Embedding Configuration\"",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context. The default value of 64 for YOKE_EMBEDDING_BATCH_SIZE is explicitly mentioned in two places in the provided context: 1) In getting-started.md under the \"Optional\" environment variables table, and 2) In architecture.md under \"Embedding Configuration\" where it states \"Batch size: configurable via YOKE_EMBEDDING_BATCH_SIZE (default 64)\". The answer directly and completely addresses the question asked about the default value."
+    },
+    {
+      "question": "What error code corresponds to 'Redis connection timeout'?",
+      "category": "direct",
+      "expected_answer": "Error code YK-005.",
+      "actual_answer": "According to the troubleshooting documentation, the error code **YK-005** corresponds to 'Redis connection timeout'.\n\nThe full error message is: `Redis connection timeout after 5000ms`\n\nThis error occurs when the Redis server is unreachable or not running.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context. The troubleshooting.md document clearly states that error code YK-005 corresponds to \"Redis connection timeout\" with the exact message \"Redis connection timeout after 5000ms\" and explains that this occurs when the Redis server is unreachable or not running. The answer directly and completely addresses the question by providing the correct error code (YK-005) and additional helpful context from the documentation."
+    },
+    {
+      "question": "If I get error YK-002, what embedding model and dimension count should I switch to?",
+      "category": "cross",
+      "expected_answer": "You should use the voyage-3 model which produces 1024-dimension vectors.",
+      "actual_answer": "According to the troubleshooting documentation, if you get error YK-002 (Embedding dimension mismatch), you should switch to the **voyage-3** model, which produces **1024 dimensions**.\n\nThe error occurs when \"The configured embedding model does not produce 1024-dimension vectors. Yoke requires the voyage-3 model which outputs 1024 dimensions.\"\n\nAfter switching to voyage-3, you'll also need to re-index all your documents by running `yoke-ingest --reindex` since the embedding dimensions have changed.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context and directly addresses the question. The troubleshooting.md document clearly states that YK-002 error occurs when \"The configured embedding model does not produce 1024-dimension vectors. Yoke requires the voyage-3 model which outputs 1024 dimensions.\" The answer correctly identifies voyage-3 as the required model and 1024 as the dimension count. It also provides additional helpful context about re-indexing documents, which is mentioned in the source material as part of the resolution steps."
+    },
+    {
+      "question": "Which endpoint does not require the Authorization: Bearer header, and what does it return?",
+      "category": "cross",
+      "expected_answer": "GET /health does not require authentication. It returns {\"status\": \"ok\", \"version\": \"0.1.0\"}.",
+      "actual_answer": "Based on the API reference documentation, the **GET /health** endpoint does not require the Authorization: Bearer header.\n\nThis endpoint returns the health status of the platform with the following response format:\n\n```json\n{\n  \"status\": \"ok\",\n  \"version\": \"0.1.0\"\n}\n```\n\nThe documentation specifically states that \"All endpoints except GET /health require an `Authorization` header with a Bearer token\" and that \"This endpoint does not require authentication.\"",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context and directly addresses the question. The context clearly states that \"All endpoints except GET /health require an `Authorization` header with a Bearer token\" and that \"This endpoint does not require authentication.\" The response format is also accurately provided in the context as {\"status\": \"ok\", \"version\": \"0.1.0\"}. The actual answer correctly identifies the GET /health endpoint as the one that doesn't require authentication and provides the exact response format from the documentation."
+    },
+    {
+      "question": "What are the three required environment variables, and which service uses Redis?",
+      "category": "cross",
+      "expected_answer": "ANTHROPIC_API_KEY, DATABASE_URL, and REDIS_URL are required. Redis is used for async job processing.",
+      "actual_answer": "Based on the documentation, the three required environment variables are:\n\n1. **ANTHROPIC_API_KEY** - Your Anthropic API key\n2. **DATABASE_URL** - PostgreSQL connection string  \n3. **REDIS_URL** - Redis connection string\n\nRedis is used by the **API Gateway** service for async job processing via a message queue. According to the architecture documentation, Redis stores job queues with a TTL of 3600 seconds (1 hour) and supports a maximum queue depth of 10,000 jobs.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context. The three required environment variables (ANTHROPIC_API_KEY, DATABASE_URL, REDIS_URL) are clearly listed in the getting-started.md file. The information about Redis being used by the API Gateway for async job processing is directly stated in the architecture.md file. The additional details about Redis configuration (TTL of 3600 seconds, max queue depth of 10,000 jobs) are also accurately pulled from the source context. The answer directly and completely addresses both parts of the question."
+    },
+    {
+      "question": "If hybrid retrieval is falling back to dense-only, what is the most likely cause and how would you diagnose it?",
+      "category": "reasoning",
+      "expected_answer": "The BM25 index is likely unavailable. Enable DEBUG logging with YOKE_LOG_LEVEL=DEBUG and check the retrieval logs.",
+      "actual_answer": "Based on the troubleshooting documentation, if hybrid retrieval is falling back to dense-only mode, the most likely cause is that **the BM25 index is unavailable**.\n\nTo diagnose this issue, you should:\n\n1. **Enable DEBUG logging** by setting `YOKE_LOG_LEVEL=DEBUG` in your environment to get detailed retrieval logs\n\n2. **Check the index status** by running `yoke-db check-indexes` to verify that the HNSW index (and presumably the BM25 index) is properly built\n\nSince hybrid retrieval combines both dense (semantic) and sparse (BM25 keyword-based) retrieval strategies, if the BM25 component is unavailable, the system would fall back to using only the dense retrieval method. This could happen if:\n\n- The BM25 index wasn't properly created during document ingestion\n- There was an issue with the index during a database migration or update\n- The sparse retrieval component encountered an error\n\nThe diagnostic steps would help identify whether this is an indexing issue or a broader system problem affecting the retrieval service's ability to access the BM25 functionality.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context and directly addresses the question. The troubleshooting.md document explicitly states under \"Slow Queries\" that if queries are taking longer than expected, one should \"Check the retrieval logs to see if hybrid retrieval is falling back to dense-only mode (this happens when the BM25 index is unavailable)\" and recommends enabling DEBUG logging with YOKE_LOG_LEVEL=DEBUG. The answer correctly identifies the most likely cause (BM25 index unavailable) and provides the exact diagnostic steps mentioned in the context. The additional context about hybrid retrieval combining dense and sparse strategies is also supported by the architecture.md document."
+    },
+    {
+      "question": "A user is hitting error YK-004. Their document is 200,000 tokens. What two steps should they take?",
+      "category": "reasoning",
+      "expected_answer": "Split the document into chunks under 50,000 tokens and re-ingest with yoke-ingest --chunk-size 50000. Also reduce top_k to retrieve fewer documents.",
+      "actual_answer": "Based on the troubleshooting guide, for error YK-004 (Context window exceeded) with a 200,000-token document, the user should take these two steps:\n\n1. **Split the large document into smaller chunks**: Re-ingest the document with a smaller chunk size using `yoke-ingest --chunk-size 50000` to break it into chunks under 50,000 tokens each.\n\n2. **Reduce the number of retrieved documents**: Lower the `top_k` parameter to retrieve fewer documents, which will help keep the combined input (question + retrieved documents) under the 180,000-token context window limit.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The actual answer is fully supported by the source context and directly addresses the question. The troubleshooting guide (YK-004 section) explicitly states the two resolution steps for context window exceeded errors: 1) Split large documents into chunks under 50,000 tokens and re-ingest with `yoke-ingest --chunk-size 50000`, and 2) Reduce the number of retrieved documents by lowering the `top_k` parameter. The actual answer accurately captures both steps with proper technical details and command syntax, matching the expected answer perfectly."
+    },
+    {
+      "question": "What is the pricing per API call for the Yoke platform?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not in the documentation.",
+      "actual_answer": "I don't have enough information to answer this question. The provided documentation covers the technical aspects of the Yoke platform including API reference, architecture, setup instructions, and troubleshooting, but it doesn't include any pricing information or details about API call costs.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The model correctly identified that pricing information is not available in the provided documentation. The actual answer accurately states that the documentation covers technical aspects but doesn't include pricing information, which aligns perfectly with the expected answer. The model appropriately declined to fabricate pricing information that wasn't present in the source context."
+    },
+    {
+      "question": "How do I configure SSO/SAML authentication for Yoke?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not in the documentation.",
+      "actual_answer": "I don't have enough information to answer this question. The provided documentation covers API authentication using Bearer tokens, but doesn't include any information about SSO or SAML authentication configuration for the Yoke platform.",
+      "faithfulness": 5,
+      "relevance": 5,
+      "reasoning": "The model correctly identifies that the documentation does not contain information about SSO/SAML authentication configuration. The actual answer appropriately declines to answer and accurately states that the documentation only covers API authentication using Bearer tokens, which is exactly what the source context shows. The model does not fabricate any information about SSO/SAML configuration that isn't present in the documentation."
+    }
+  ]
+}
