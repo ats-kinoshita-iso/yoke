@@ -5,6 +5,8 @@ import anthropic
 from dotenv import load_dotenv
 
 
+MODEL = "claude-sonnet-4-20250514"
+
 SYSTEM_PROMPT = (
     "Answer the question using only the provided context. "
     "If the context does not contain enough information to answer, "
@@ -25,7 +27,7 @@ def ask(question: str, docs_dir: Path) -> str:
 
     client = anthropic.Anthropic()
     message = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model=MODEL,
         temperature=0,
         max_tokens=1024,
         system=SYSTEM_PROMPT,

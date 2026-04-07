@@ -18,13 +18,18 @@ dependencies = [
     "sqlalchemy>=2.0",
     "uvicorn[standard]>=0.34",
     "pymupdf>=1.27",
+    "httpx>=0.28",
+    "numpy>=2.0",
+    "openai>=1.0",
+    "rank-bm25>=0.2",
+    "tqdm>=4.66",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "httpx>=0.28",
     "pytest>=8.3",
     "pytest-asyncio>=0.25",
+    "pytest-httpx>=0.35",
     "ragas>=0.2",
 ]
 
@@ -41,3 +46,4 @@ asyncio_mode = "auto"
 
 [project.scripts]
 yoke-baseline = "yoke.baseline:main"
+yoke-ingest = "yoke.ingestion.pipeline:main"

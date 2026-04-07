@@ -1,0 +1,12 @@
+{
+  "phase": "phase1_ingestion",
+  "corpus": "Lee, Introduction to Smooth Manifolds, Ch.1 (pp.19-49)",
+  "total_chunks": 38,
+  "chunk_size_min_tokens": 465,
+  "chunk_size_max_tokens": 597,
+  "chunk_size_mean_tokens": 550,
+  "pct_chunks_in_range": 1.0,
+  "sentence_coverage": 0.9984,
+  "sentences_missing": 1,
+  "sentences_total": 628
+}
