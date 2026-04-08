@@ -10,14 +10,14 @@ import io
 import json
 import re
 import sys
-import time
 from pathlib import Path
 
-import anthropic
 import numpy as np
 import pytest
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
+
+from evals._judge import judge as judge_dispatch
 
 # Fix Windows console encoding for Unicode math symbols
 if sys.stdout.encoding != "utf-8":
@@ -271,6 +271,26 @@ SUMMARY_JUDGE_SYSTEM = (
 DEFAULT_JUDGE_MODEL = "claude-haiku-4-5-20251001"
 
 
+def _judge_summary(
+    chunk_text: str,
+    summary: str,
+    full_text: str,
+    judge_model: str,
+) -> "ContextSummaryScore":
+    """Score a summary using the shared judge dispatch."""
+    return judge_dispatch(
+        model=judge_model,
+        system=SUMMARY_JUDGE_SYSTEM,
+        user_prompt=(
+            f"Chunk text:\n{chunk_text}\n\n"
+            f"Contextual summary:\n{summary}\n\n"
+            f"Full document (for reference):\n{full_text[:8000]}..."
+        ),
+        tool=SUMMARY_JUDGE_TOOL,
+        score_cls=ContextSummaryScore,
+    )
+
+
 def _ollama_available() -> bool:
     """Check if Ollama is running locally."""
     try:
@@ -304,7 +324,6 @@ class TestContextSummary:
         indices = [n // 6, n // 3, n // 2, 2 * n // 3, 5 * n // 6]
         sample_chunks = [chunks[i] for i in indices if i < n]
 
-        client = anthropic.Anthropic()
         scores: list[ContextSummaryScore] = []
 
         for i, chunk in enumerate(sample_chunks):
@@ -312,35 +331,16 @@ class TestContextSummary:
             summary = enrich_chunk(full_text, chunk)
 
             # Judge the summary
-            message = client.messages.create(
-                model=judge_model or DEFAULT_JUDGE_MODEL,
-                temperature=0,
-                max_tokens=512,
-                system=SUMMARY_JUDGE_SYSTEM,
-                tools=[SUMMARY_JUDGE_TOOL],
-                tool_choice={"type": "tool", "name": "score_summary"},
-                messages=[
-                    {
-                        "role": "user",
-                        "content": (
-                            f"Chunk text:\n{chunk.text}\n\n"
-                            f"Contextual summary:\n{summary}\n\n"
-                            f"Full document (for reference):\n{full_text[:8000]}..."
-                        ),
-                    }
-                ],
+            score = _judge_summary(
+                chunk.text, summary, full_text, judge_model or DEFAULT_JUDGE_MODEL,
             )
-            for block in message.content:
-                if block.type == "tool_use":
-                    score = ContextSummaryScore(**block.input)
-                    scores.append(score)
-                    print(
-                        f"\n  Chunk {indices[i]}: accuracy={score.accuracy} "
-                        f"situating={score.situating_value} "
-                        f"conciseness={score.conciseness}"
-                    )
-                    print(f"    {score.reasoning}")
-                    break
+            scores.append(score)
+            print(
+                f"\n  Chunk {indices[i]}: accuracy={score.accuracy} "
+                f"situating={score.situating_value} "
+                f"conciseness={score.conciseness}"
+            )
+            print(f"    {score.reasoning}")
 
         assert len(scores) == len(sample_chunks), "Judge failed on some chunks"
 

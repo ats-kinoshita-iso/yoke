@@ -122,7 +122,7 @@ class TestYokeSettings:
         settings = YokeSettings()
         assert settings.generation_model == "claude-sonnet-4-20250514"
         assert settings.judge_model == "claude-haiku-4-5-20251001"
-        assert settings.summary_model == "ollama/gemma4:e2b"
+        assert settings.summary_model == "claude-haiku-4-5-20251001"
         assert settings.embedding_model == "text-embedding-3-small"
 
     def test_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:

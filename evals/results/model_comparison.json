@@ -1,0 +1,237 @@
+{
+  "eval": "model_comparison",
+  "corpus": "Lee, Introduction to Smooth Manifolds, Ch.1",
+  "num_chunks": 10,
+  "judge_model": "claude-haiku-4-5-20251001",
+  "skipped_models": [
+    "Gemma-4 (local)"
+  ],
+  "models": {
+    "Sonnet": {
+      "model": "claude-sonnet-4-20250514",
+      "provider": "claude",
+      "num_chunks": 10,
+      "avg_accuracy": 4.1,
+      "avg_contextual_value": 4.0,
+      "avg_conciseness": 3.0,
+      "avg_overall": 3.7,
+      "avg_time_s": 3.5,
+      "avg_cost_usd": 0.005026,
+      "per_chunk_results": [
+        {
+          "chunk_index": 0,
+          "summary": "This chunk introduces the fundamental concept of smooth manifolds, defining them as spaces that locally resemble Euclidean space Rn and support calculus operations, while providing concrete examples like circles, spheres, and tori, and explaining why smoothness is essential for applications involving integration, differentiation, and differential equations. The document covers the preamble and opening of Chapter 1 just before this chunk, which briefly states that the book is about smooth manifolds. Just after this chunk, the document transitions to discussing topological manifolds as the foundation for understanding smooth manifolds.",
+          "accuracy": 5,
+          "contextual_value": 4,
+          "conciseness": 2,
+          "reasoning": "Accuracy is excellent\u2014the summary correctly captures the chunk's core content: the definition of smooth manifolds, examples (circles, spheres, tori), and the importance of smoothness for calculus applications. Contextual value is strong; it appropriately positions the chunk within the chapter structure by noting what comes before and after. However, conciseness is weak\u2014the summary is significantly longer than 3 sentences (it's 2 long sentences plus contextual framing), making it verbose and not appropriately brief for the task requirements.",
+          "elapsed_s": 3.61,
+          "cost_usd": 0.004965
+        },
+        {
+          "chunk_index": 3,
+          "summary": "This chunk discusses the topological invariance of dimension theorem, which states that manifolds of different dimensions cannot be homeomorphic to each other, along with basic properties and examples of topological manifolds including the requirement that they be Hausdorff and second-countable spaces. Just before this chunk, the document covers the basic definition and structure of topological manifolds, including coordinate charts and the fundamental requirement that manifolds locally resemble Euclidean space. Just after this chunk, the document continues discussing the motivation for requiring manifolds to be second-countable and explores additional topological properties that ensure manifolds behave as expected.",
+          "accuracy": 5,
+          "contextual_value": 5,
+          "conciseness": 4,
+          "reasoning": "The summary accurately captures all major points: the topological invariance of dimension theorem, the Hausdorff and second-countable requirements, and basic examples. It correctly contextualizes the chunk within the broader document structure by noting what precedes it (basic definitions and coordinate charts) and what follows (further discussion of second-countability). The summary is well-structured and informative. The only minor deduction is for conciseness\u2014while it's close to 3 sentences, it's slightly dense with information and could be more concise, though it remains reasonable in length.",
+          "elapsed_s": 3.99,
+          "cost_usd": 0.005553
+        },
+        {
+          "chunk_index": 6,
+          "summary": "This chunk discusses two specific examples of smooth manifolds: the n-dimensional sphere Sn constructed using stereographic projection coordinates, and n-dimensional real projective space RPn defined as the set of 1-dimensional linear subspaces of Rn+1 with quotient topology. Just before this chunk, the document covers the general theory of topological manifolds and their fundamental properties including local Euclidean structure and coordinate charts. Just after this chunk, the document continues with additional examples of smooth manifolds, building on these foundational cases to illustrate the broader theory.",
+          "accuracy": 3,
+          "contextual_value": 4,
+          "conciseness": 5,
+          "reasoning": "Accuracy: The summary correctly identifies the two main examples (Sn and RPn) and their basic definitions. However, it inaccurately describes Sn as being \"constructed using stereographic projection coordinates\" when the chunk actually uses a different approach (defining Sn implicitly via the function f(u) = \u221a(1-|u|\u00b2) and then showing it's locally Euclidean through graph coordinates). The description of RPn is accurate. Contextual Value: Strong - the summary effectively positions these examples within the broader document structure, explaining that they follow general manifold theory and precede additional examples. This adds useful context beyond the chunk itself. Conciseness: Excellent - exactly 3 sentences, well-structured, no unnecessary fluff.",
+          "elapsed_s": 4.29,
+          "cost_usd": 0.004944
+        },
+        {
+          "chunk_index": 9,
+          "summary": "This chunk discusses the local compactness and paracompactness properties of topological manifolds, including the definition of paracompactness and proofs that all topological manifolds possess these properties. Just before this chunk, the document covers the connectedness properties of manifolds and proves that manifolds are locally connected with at most countably many connected components. Just after this chunk, the document transitions to discussing smooth structures on manifolds, including the concepts of coordinate charts and transition maps.",
+          "accuracy": 4,
+          "contextual_value": 5,
+          "conciseness": 5,
+          "reasoning": "Accuracy: The summary correctly identifies the main topics (local compactness and paracompactness) and accurately describes the content. The claim about \"proofs that all topological manifolds possess these properties\" is accurate based on Proposition 1.12 and Theorem 1.15. Minor deduction because the summary doesn't mention the technical definitions (locally finite, refinement) that are central to understanding paracompactness. Contextual value: Excellent - the summary provides helpful positioning by describing what comes before (connectedness properties) and after (smooth structures, coordinate charts, transition maps), which significantly aids understanding where this chunk fits in the broader document. Conciseness: Exactly 3 sentences, well-structured, no unnecessary fluff or verbosity.",
+          "elapsed_s": 3.01,
+          "cost_usd": 0.004851
+        },
+        {
+          "chunk_index": 12,
+          "summary": "This chunk discusses the fundamental problem that derivatives cannot be defined on topological manifolds because they are not invariant under homeomorphisms, and introduces the concept of smooth manifolds as topological manifolds with additional structure that allows calculus to be performed. The document covers topological manifolds and their basic properties, including concepts like simple connectivity and classification up to homeomorphism, just before this chunk. The document covers the formal definition and construction of smooth manifolds using coordinate charts and transition maps just after this chunk.",
+          "accuracy": 4,
+          "contextual_value": 5,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly identifies the main points\u2014that derivatives aren't invariant under homeomorphisms and that smooth manifolds are introduced as a solution. However, it slightly overstates the chunk's coverage of \"topological manifolds and their basic properties\" when the chunk mainly uses them as a contrast. Contextual value: Excellent\u2014the summary effectively positions the chunk within the broader document structure, explaining what comes before and after. Conciseness: The summary is too long at 4 sentences (exceeds the 3-sentence requirement) and contains some unnecessary elaboration about what the document \"covers\" before and after, which could be more concise.",
+          "elapsed_s": 3.01,
+          "cost_usd": 0.004956
+        },
+        {
+          "chunk_index": 15,
+          "summary": "This chunk discusses Proposition 1.17, which establishes that every smooth atlas for a topological manifold is contained in a unique maximal smooth atlas called the smooth structure determined by that atlas. Just before this chunk, the document covers the definition and properties of smooth structures on topological manifolds, including examples of manifolds with multiple smooth structures and some that admit no smooth structures at all. Just after this chunk, the document continues with the proof of Proposition 1.17, specifically showing that the set of all charts smoothly compatible with a given smooth atlas forms a maximal smooth atlas.",
+          "accuracy": 4,
+          "contextual_value": 5,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly identifies Proposition 1.17 and its main claim about maximal smooth atlases. However, it slightly oversimplifies part (b) of the proposition by not mentioning it. Contextual value: Excellent\u2014the summary effectively positions the chunk within the broader document by explaining what precedes it (discussion of smooth structures and examples) and what follows (the proof details). Conciseness: The summary is 4 sentences, exceeding the 3-sentence requirement. While well-written, it contains some redundancy (e.g., \"maximal smooth atlas called the smooth structure determined by that atlas\" could be more concise) and could be tightened to meet the format requirement.",
+          "elapsed_s": 3.49,
+          "cost_usd": 0.005109
+        },
+        {
+          "chunk_index": 18,
+          "summary": "This chunk discusses the concept of coordinate identification on manifolds, explaining how points can be represented in different coordinate systems (like polar coordinates) and the fundamental challenge of ensuring that mathematical objects defined on manifolds are coordinate-independent. Just before this chunk, the document covers the technical details of coordinate charts and transition maps between different coordinate systems on smooth manifolds. Just after this chunk, the document likely continues with examples of smooth manifolds or further develops the theory of coordinate-independent definitions and invariant objects on manifolds.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly captures the main ideas about coordinate identification, polar coordinates, and the need for coordinate-independent definitions. However, it slightly overstates the \"fundamental challenge\" framing\u2014the chunk presents this more as a practical consideration than an existential problem. Contextual value: The summary attempts to provide context about what comes before and after, but these are educated guesses rather than explicit information from the chunk. The guesses are reasonable but not strongly grounded. Conciseness: The summary is 3 sentences but quite dense and wordy. The first sentence is particularly long and could be split. The contextual framing in sentences 2-3 adds length without proportional value since it's speculative rather than derived from the chunk itself.",
+          "elapsed_s": 3.41,
+          "cost_usd": 0.005136
+        },
+        {
+          "chunk_index": 21,
+          "summary": "This chunk discusses Einstein's summation convention, which is a notational system where repeated indices (one upper, one lower) are automatically summed without explicit summation signs, along with the index positioning conventions used throughout the book. Just before this chunk, the document covers the fundamental examples and constructions of smooth manifolds, including various types of manifolds and their coordinate systems. Immediately after this chunk, the document continues with additional examples of smooth manifolds to further illustrate the concepts introduced earlier in the chapter.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly captures the main points about Einstein's summation convention and index positioning (4/5 - accurate but slightly oversimplifies the nuance about dummy indices and the exceptions mentioned). Contextual value: The summary adds some context about what comes before and after, but this is somewhat generic and not deeply informative about how this chunk fits into the broader narrative (3/5). Conciseness: The summary exceeds 3 sentences (it has 3 sentences but they are quite dense and could be more concise). The first sentence is particularly long and could be split or condensed (2/5 - verbose for the constraint).",
+          "elapsed_s": 3.33,
+          "cost_usd": 0.005016
+        },
+        {
+          "chunk_index": 24,
+          "summary": "This chunk discusses several examples of smooth manifolds, including the standard smooth structure on the n-sphere, level sets of smooth functions as manifolds, real projective spaces, and smooth product manifolds. Just before this chunk, the document covers the general theory of smooth structures and transition maps between coordinate charts on manifolds. Just after this chunk, the document transitions to discussing manifolds with boundary, as indicated by the section on \"Smoothness of maps on open subsets of Hn\" in the structure.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 4,
+          "reasoning": "Accuracy: The summary correctly identifies the four main examples discussed (n-sphere, level sets, projective spaces, product manifolds) and accurately describes their content. The claim about what comes before (general theory of smooth structures) is reasonable and supported by the chunk's reference to prior work. However, the claim about what comes after (manifolds with boundary) is speculative\u2014the chunk text doesn't explicitly indicate this transition, so this is a minor inaccuracy. Contextual Value: The summary provides some useful positioning by mentioning what precedes the chunk, but the claim about what follows is not well-supported by the provided text. It adds moderate context but could be more grounded. Conciseness: The summary is exactly 3 sentences and appropriately brief with minimal fluff, though the third sentence is somewhat speculative.",
+          "elapsed_s": 3.16,
+          "cost_usd": 0.004839
+        },
+        {
+          "chunk_index": 27,
+          "summary": "This chunk discusses the construction of coordinate charts for the Grassmannian manifold Gk(V) by establishing a bijection between linear maps from complementary subspaces and k-dimensional subspaces that intersect trivially with a chosen complement. The document covers examples of smooth manifolds just before this chunk, as indicated by the section heading \"Examples of Smooth Manifolds\" in the structure. The document covers manifolds with boundary just after this chunk, as shown by the section heading \"Manifolds with Boundary\" that follows in the document structure.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly captures the main mathematical content about the bijection between linear maps and k-dimensional subspaces with trivial intersection. However, it slightly oversimplifies by not mentioning the verification of the smooth manifold chart conditions (i) and (ii), which is a significant part of the chunk. Contextual Value: The summary adds some useful context by mentioning that this relates to \"Examples of Smooth Manifolds\" and that \"Manifolds with Boundary\" follows, but this contextual information is not explicitly stated in the chunk itself and appears to be inferred from document structure. The summary could better explain why this construction matters (i.e., that it's proving Gk(V) is a smooth manifold). Conciseness: The summary exceeds 3 sentences (it has 3 sentences but the first is quite long and dense), and the contextual claims about surrounding sections add length without being directly supported by the chunk text. The summary would be more concise if it focused solely on the chunk's content.",
+          "elapsed_s": 3.75,
+          "cost_usd": 0.00489
+        }
+      ]
+    },
+    "Haiku": {
+      "model": "claude-haiku-4-5-20251001",
+      "provider": "claude",
+      "num_chunks": 10,
+      "avg_accuracy": 4.4,
+      "avg_contextual_value": 4.0,
+      "avg_conciseness": 3.4,
+      "avg_overall": 3.93,
+      "avg_time_s": 1.63,
+      "avg_cost_usd": 0.001335,
+      "per_chunk_results": [
+        {
+          "chunk_index": 0,
+          "summary": "This chunk introduces smooth manifolds as spaces that locally resemble Euclidean space and support calculus operations, providing intuitive examples like circles, spheres, and tori while explaining why smoothness is essential for applications involving integration, differentiation, and differential equations. The document begins with this preamble and introduction to smooth manifolds as the opening content of Chapter 1, with no preceding topic. The document continues after this chunk by formally defining topological manifolds and their properties, followed by discussions of coordinate charts, smooth structures, and various examples of smooth manifolds.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly captures the main content\u2014smooth manifolds as spaces locally resembling Euclidean space, examples provided, and the importance of smoothness for calculus. However, it slightly overstates the chunk's discussion of \"integration, differentiation, and differential equations\" by presenting them as equally emphasized when the chunk actually focuses more on why smoothness is needed. Score: 4/5.\n\nContextual value: The summary adds some useful positioning by noting this is Chapter 1's opening and mentioning what comes after (topological manifolds, coordinate charts, smooth structures). However, this contextual information goes beyond what can be reliably inferred from the chunk alone and ventures into speculation about document structure. Score: 3/5.\n\nConciseness: The summary is significantly longer than 3 sentences\u2014it contains 3 sentences but the first sentence is quite long and dense with multiple clauses, making it harder to parse. The second and third sentences add contextual framing that, while potentially useful, makes the summary less concise than ideal. Score: 2/5.",
+          "elapsed_s": 1.84,
+          "cost_usd": 0.001344
+        },
+        {
+          "chunk_index": 3,
+          "summary": "This chunk discusses the definition and properties of topological manifolds, including the concept of dimension, Theorem 1.2 on the topological invariance of dimension, and the requirements that manifolds be Hausdorff and second-countable spaces. Just before this chunk, the document covers the basic definition of topological manifolds through coordinate charts and examples like circles and spheres. Just after this chunk, the document transitions to discussing smooth structures on manifolds, including smooth maps, transition maps, and the compatibility conditions needed to define smooth manifolds.",
+          "accuracy": 4,
+          "contextual_value": 5,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly identifies the main topics (dimension, Theorem 1.2, Hausdorff and second-countable properties). However, it slightly overstates what's in the chunk\u2014the chunk doesn't explicitly discuss \"the basic definition of topological manifolds through coordinate charts\" in detail, though it does reference equivalent definitions. The contextual framing about what comes before and after is helpful but not explicitly stated in the chunk itself. Contextual Value: Excellent\u2014the summary provides useful positioning by explaining what precedes and follows this chunk, helping readers understand how it fits into the broader document structure. Conciseness: The summary is too long at 4 sentences rather than the required 3, and contains some unnecessary elaboration. It could be more concise while retaining the key information and context.",
+          "elapsed_s": 1.92,
+          "cost_usd": 0.001357
+        },
+        {
+          "chunk_index": 6,
+          "summary": "This chunk discusses the definition and topological structure of real projective spaces, specifically showing that n-dimensional real projective space RP^n is a topological n-manifold by constructing explicit coordinate charts and demonstrating local Euclideanness. Just before this chunk, the document covers the sphere S^n as an example of a topological manifold, using graph coordinates to establish its locally Euclidean structure. Just after this chunk, the document transitions to discussing smooth structures on manifolds and how to define differentiable maps between manifolds.",
+          "accuracy": 5,
+          "contextual_value": 5,
+          "conciseness": 5,
+          "reasoning": "The summary is highly accurate\u2014it correctly identifies the chunk's main content (definition of RP^n and proof that it's a topological n-manifold via explicit charts), accurately describes the construction method (coordinate charts \u03c6_i and local Euclideanness), and correctly notes the geometric interpretation. The contextual value is excellent: it positions RP^n as a follow-up example to S^n (both manifold examples), explains the pedagogical flow, and anticipates the transition to smooth structures. The summary is exactly 3 sentences, concise without unnecessary words, and maintains appropriate technical precision. All claims are factually grounded in the chunk text.",
+          "elapsed_s": 1.53,
+          "cost_usd": 0.001286
+        },
+        {
+          "chunk_index": 9,
+          "summary": "This chunk discusses the topological properties of manifolds, specifically proving that every topological manifold is locally compact and paracompact, with detailed definitions of locally finite collections and refinements of open covers. Just before this chunk, the document covers the connectivity properties of manifolds, including how manifolds can be decomposed into countably many connected components. Just after this chunk, the document transitions to discussing smooth structures on manifolds and how to define smooth maps between them using coordinate charts.",
+          "accuracy": 4,
+          "contextual_value": 4,
+          "conciseness": 4,
+          "reasoning": "Accuracy: The summary correctly identifies the main content (local compactness and paracompactness of manifolds) and accurately describes the definitions provided. However, it slightly overstates the scope by saying \"detailed definitions\" when the chunk provides definitions but focuses more on theorems and proofs. Score: 4/5. Contextual value: The summary effectively positions the chunk within the document by referencing what comes before (connectivity properties) and after (smooth structures), which adds useful context beyond the chunk itself. Score: 4/5. Conciseness: The summary is exactly 3 sentences and appropriately brief without unnecessary fluff. Score: 4/5. Minor deduction because \"detailed definitions\" is slightly imprecise\u2014the chunk emphasizes theorems more than definitions.",
+          "elapsed_s": 1.39,
+          "cost_usd": 0.00131
+        },
+        {
+          "chunk_index": 12,
+          "summary": "This chunk discusses the fundamental distinction between topological manifolds and smooth manifolds, explaining why derivatives cannot be invariant under homeomorphisms and introducing the concept of smooth maps and diffeomorphisms as the basis for defining smooth manifold structure. Just before this chunk, the document covers topological manifolds, their basic properties, and the limitations of doing calculus on spaces defined purely through topological structure. Just after this chunk, the document introduces smooth structures on manifolds by defining compatible coordinate charts and transition maps that preserve smoothness.",
+          "accuracy": 5,
+          "contextual_value": 5,
+          "conciseness": 4,
+          "reasoning": "Accuracy is excellent\u2014the summary correctly captures the chunk's core argument: why calculus doesn't work on topological manifolds (derivatives aren't homeomorphism-invariant), the introduction of smooth maps and diffeomorphisms, and the motivation for smooth manifold structure. The contextual value is strong, as it effectively positions the chunk within the broader narrative (what comes before about topological manifolds, what comes after about smooth structures). Conciseness is very good\u2014the summary is three sentences and appropriately dense, though the first sentence is slightly long and could be more concise. Overall, this is a high-quality summary that accurately conveys the chunk's purpose and context.",
+          "elapsed_s": 1.9,
+          "cost_usd": 0.001338
+        },
+        {
+          "chunk_index": 15,
+          "summary": "This chunk discusses Proposition 1.17, which establishes that every smooth atlas on a topological manifold is contained in a unique maximal smooth atlas and provides a criterion for when two smooth atlases determine the same smooth structure. Just before this chunk, the document explains that a topological manifold can admit multiple different smooth structures or sometimes no smooth structures at all, motivating the need for a practical way to define smooth structures. Just after this chunk, the document covers examples of smooth manifolds and the concept of manifolds with boundary.",
+          "accuracy": 5,
+          "contextual_value": 5,
+          "conciseness": 5,
+          "reasoning": "The summary accurately captures the core content of Proposition 1.17, correctly stating both parts (a) and (b) without distortion. It provides excellent contextual value by explaining why this proposition matters\u2014connecting it to the preceding discussion about multiple smooth structures and the practical motivation for the proposition. The summary is also well-structured at exactly 3 sentences with no unnecessary words, making it appropriately concise. The contextual framing about what comes before and after adds significant value to understanding the chunk's role in the broader document.",
+          "elapsed_s": 1.36,
+          "cost_usd": 0.001306
+        },
+        {
+          "chunk_index": 18,
+          "summary": "This chunk discusses the use of coordinate charts on manifolds, particularly how local identifications with Euclidean space can be suppressed in notation for simplification, and illustrates this with the example of polar coordinates in the plane. Just before this chunk, the document covers smooth structures on manifolds and the definition of smooth compatibility between coordinate charts through transition maps. Just after this chunk, the document addresses manifolds with boundary and the smoothness of maps defined on open subsets of the half-space.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly captures the main points about coordinate charts, local identifications, and polar coordinates. However, it slightly oversimplifies the chunk's discussion about the flexibility/curse of coordinate choice and the two approaches to defining global objects. The summary is mostly accurate but misses some nuance. Contextual value: The summary attempts to provide context about what comes before and after, but these claims about smooth structures, transition maps, and manifolds with boundary are not explicitly stated in the provided chunk, so they appear to be inferred rather than grounded. This is somewhat speculative. Conciseness: The summary is 3 sentences but is quite dense and could be more concise. The first sentence is particularly long and tries to pack in multiple concepts. It reads as somewhat wordy for the constraint.",
+          "elapsed_s": 1.37,
+          "cost_usd": 0.001278
+        },
+        {
+          "chunk_index": 21,
+          "summary": "This chunk explains Einstein's summation convention, a notational system where repeated indices (one upper, one lower) indicate implicit summation, and establishes the convention of writing basis vectors with lower indices and vector components with upper indices to streamline expressions in differential geometry. Just before this chunk, the document covers various types of smooth manifolds including topological manifolds, smooth structures, and manifolds with boundary, along with their defining properties and coordinate charts. Just after this chunk, the document continues with additional examples of smooth manifolds to illustrate the concepts previously introduced.",
+          "accuracy": 5,
+          "contextual_value": 4,
+          "conciseness": 4,
+          "reasoning": "Accuracy is excellent\u2014the summary correctly captures the core content about Einstein's summation convention, the index positioning rules (lower for basis vectors, upper for components), and the practical benefits. Contextual value is strong; it appropriately positions the chunk within the broader document structure (what comes before about manifolds, what comes after with more examples), though the \"before\" context is somewhat inferred rather than explicitly stated in the chunk. Conciseness is good\u2014the summary is 3 sentences and avoids unnecessary fluff, though it's slightly dense with information. The summary effectively conveys why this notation matters in differential geometry.",
+          "elapsed_s": 1.72,
+          "cost_usd": 0.00141
+        },
+        {
+          "chunk_index": 24,
+          "summary": "This chunk discusses several key examples of smooth manifolds, including the standard smooth structure on the n-sphere, level sets of smooth functions defined by the implicit function theorem, real projective spaces, and smooth product manifolds. Just before this chunk, the document covers the general theory of smooth structures and how to define them through compatible coordinate charts, as illustrated by the sphere example. Just after this chunk, the document continues with additional examples and foundational concepts related to manifolds with boundary and the properties of smooth maps between manifolds.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 2,
+          "reasoning": "Accuracy: The summary correctly identifies the four main examples (n-sphere, level sets, projective spaces, product manifolds) and accurately describes their content. However, the claim about what comes \"just after this chunk\" (manifolds with boundary and smooth maps) cannot be verified from the provided text alone, making it slightly speculative. Contextual Value: The summary provides some useful positioning by mentioning the general theory of smooth structures that precedes these examples, but the claim about what follows is unverifiable and somewhat generic. Conciseness: The summary is 3 sentences but is somewhat dense and could be more concise. The second and third sentences attempt to provide context but are wordy and include unverifiable claims about subsequent content.",
+          "elapsed_s": 1.58,
+          "cost_usd": 0.001366
+        },
+        {
+          "chunk_index": 27,
+          "summary": "This chunk discusses the construction of coordinate charts on the Grassmannian manifold Gk(V) by identifying k-dimensional subspaces with graphs of linear maps, establishing that these charts satisfy the conditions of the smooth manifold chart lemma. Just before this chunk, the document covers the general definition and properties of topological manifolds, smooth structures, and examples of smooth manifolds including projective spaces and Grassmannians. Just after this chunk, the document continues with the discussion of manifolds with boundary and provides further examples and applications of smooth manifold theory.",
+          "accuracy": 4,
+          "contextual_value": 3,
+          "conciseness": 4,
+          "reasoning": "Accuracy: The summary correctly captures the main content\u2014identifying k-dimensional subspaces with graphs of linear maps and verifying smooth manifold chart conditions. However, it slightly oversimplifies the technical details (e.g., doesn't mention the bijection \u0393 or the openness verification). Contextual value: The summary provides reasonable positioning about what comes before (topological manifolds, smooth structures) and after (manifolds with boundary), but these are somewhat generic predictions rather than specific details from the actual document structure. Conciseness: The summary is well-structured at 3 sentences with appropriate brevity and no unnecessary fluff.",
+          "elapsed_s": 1.66,
+          "cost_usd": 0.001356
+        }
+      ]
+    }
+  }
+}

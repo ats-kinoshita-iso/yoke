@@ -1,11 +1,11 @@
 import argparse
 from pathlib import Path
 
-import anthropic
 from dotenv import load_dotenv
 
+from yoke.config import YokeSettings, generate as llm_generate
 
-MODEL = "claude-sonnet-4-20250514"
+GENERATION_MODEL = YokeSettings().generation_model
 
 SYSTEM_PROMPT = (
     "Answer the question using only the provided context. "
@@ -15,7 +15,8 @@ SYSTEM_PROMPT = (
 )
 
 
-def ask(question: str, docs_dir: Path) -> str:
+def ask(question: str, docs_dir: Path, *, model: str = GENERATION_MODEL) -> str:
+    """Answer a question using context-stuffing from all docs in a directory."""
     paths = sorted(
         p for p in docs_dir.iterdir()
         if p.suffix in (".md", ".txt") and p.is_file()
@@ -25,17 +26,11 @@ def ask(question: str, docs_dir: Path) -> str:
         sections.append(f"## {p.name}\n{p.read_text(encoding='utf-8')}")
     context = "\n---\n".join(sections)
 
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model=MODEL,
-        temperature=0,
-        max_tokens=1024,
+    return llm_generate(
+        model,
+        f"Context:\n{context}\n\nQuestion: {question}",
         system=SYSTEM_PROMPT,
-        messages=[
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"}
-        ],
     )
-    return message.content[0].text
 
 
 def main() -> None:
