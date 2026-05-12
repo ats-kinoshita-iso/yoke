@@ -1,0 +1,11 @@
+{
+  "phase": "phase2_tracing",
+  "eval_categories": [
+    "trace_completeness",
+    "quality_scoring_accuracy",
+    "noop_mode",
+    "score_attachment"
+  ],
+  "langfuse_configured": false,
+  "anthropic_key_available": true
+}

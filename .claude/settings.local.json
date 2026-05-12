@@ -23,7 +23,8 @@
       "Bash(uv add:*)",
       "Bash(python -c \":*)",
       "Bash(uv run python -c \":*)",
-      "Bash(PYTHONIOENCODING=utf-8 uv run --extra dev python -m evals.phase0_math_eval)"
+      "Bash(PYTHONIOENCODING=utf-8 uv run --extra dev python -m evals.phase0_math_eval)",
+      "Bash(xargs -I {} bash -c 'echo \"=== {} ===\" && wc -l {}')"
     ]
   }
 }

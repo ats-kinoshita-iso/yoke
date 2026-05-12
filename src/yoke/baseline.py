@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from yoke.config import YokeSettings, generate as llm_generate
+from yoke.tracing import flush_tracing, init_tracing, set_current_trace_id
 
 GENERATION_MODEL = YokeSettings().generation_model
 
@@ -26,11 +27,24 @@ def ask(question: str, docs_dir: Path, *, model: str = GENERATION_MODEL) -> str:
         sections.append(f"## {p.name}\n{p.read_text(encoding='utf-8')}")
     context = "\n---\n".join(sections)
 
-    return llm_generate(
-        model,
-        f"Context:\n{context}\n\nQuestion: {question}",
-        system=SYSTEM_PROMPT,
-    )
+    langfuse = init_tracing()
+    trace = None
+    if langfuse is not None:
+        trace = langfuse.trace(name="baseline-ask")
+        set_current_trace_id(trace.id)
+
+    user_content = f"Context:\n{context}\n\nQuestion: {question}"
+    answer = llm_generate(model, user_content, system=SYSTEM_PROMPT)
+
+    if trace is not None:
+        trace.generation(
+            name="baseline-llm",
+            model=model,
+            input={"prompt": user_content, "system": SYSTEM_PROMPT},
+        ).end(output=answer)
+
+    flush_tracing(langfuse)
+    return answer
 
 
 def main() -> None:

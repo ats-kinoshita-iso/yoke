@@ -13,6 +13,13 @@ class YokeSettings(BaseSettings):
     summary_model: str = "claude-haiku-4-5-20251001"
     embedding_model: str = "text-embedding-3-small"
 
+    # Langfuse observability
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_host: str = "https://cloud.langfuse.com"
+    tracing_enabled: bool = True
+    quality_scoring_enabled: bool = True
+
 
 def parse_model_spec(spec: str) -> tuple[str, str]:
     """Parse 'provider/model' into (provider, model).

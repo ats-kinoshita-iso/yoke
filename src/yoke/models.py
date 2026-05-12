@@ -53,11 +53,31 @@ class OllamaClient:
             return resp.json()["response"]
 
 
-def get_model_client(provider: str, model_name: str) -> ModelClient:
+def get_model_client(
+    provider: str,
+    model_name: str,
+    *,
+    langfuse: object | None = None,
+) -> ModelClient:
+    """Create a model client, optionally wrapped with Langfuse tracing.
+
+    Args:
+        provider: Backend provider ("claude", "ollama").
+        model_name: Model identifier for the provider.
+        langfuse: A Langfuse instance. When provided, the returned client
+            is wrapped with ``TracedModelClient`` for automatic span recording.
+    """
     match provider:
         case "claude":
-            return ClaudeClient(model_name)
+            inner: ModelClient = ClaudeClient(model_name)
         case "ollama":
-            return OllamaClient(model_name)
+            inner = OllamaClient(model_name)
         case _:
             raise ValueError(f"Unknown provider: {provider}")
+
+    if langfuse is not None:
+        from yoke.tracing import TracedModelClient
+
+        return TracedModelClient(inner, model_name=model_name, langfuse=langfuse)
+
+    return inner

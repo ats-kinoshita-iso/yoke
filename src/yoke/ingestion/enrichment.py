@@ -1,9 +1,13 @@
 """Contextual Retrieval: LLM-generated chunk summaries."""
 
+from __future__ import annotations
+
 import asyncio
 import logging
 import re
 from collections.abc import Callable
+
+from langfuse.decorators import observe
 
 from yoke.config import YokeSettings, parse_model_spec
 from yoke.ingestion.models import Chunk, EnrichedChunk
@@ -115,6 +119,7 @@ async def _enrich_one(
     )
 
 
+@observe(name="enrich_chunks")
 async def enrich_chunks(
     full_text: str,
     chunks: list[Chunk],
