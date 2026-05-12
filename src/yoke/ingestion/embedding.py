@@ -1,9 +1,12 @@
 """OpenAI embedding generation with batching and cost logging."""
 
+from __future__ import annotations
+
 import asyncio
 import logging
 
 import openai
+from langfuse.decorators import observe
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +18,7 @@ def _estimate_tokens(text: str) -> int:
     return len(text) // 4
 
 
+@observe(name="embed_texts_async")
 async def embed_texts_async(
     texts: list[str],
     *,

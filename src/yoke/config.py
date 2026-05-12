@@ -11,6 +11,13 @@ class YokeSettings(BaseSettings):
     summary_model: str = "ollama/gemma4:e2b"
     embedding_model: str = "text-embedding-3-small"
 
+    # Langfuse observability
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_host: str = "https://cloud.langfuse.com"
+    tracing_enabled: bool = True
+    quality_scoring_enabled: bool = True
+
 
 def parse_model_spec(spec: str) -> tuple[str, str]:
     """Parse 'provider/model' into (provider, model). Bare names default to 'claude'."""

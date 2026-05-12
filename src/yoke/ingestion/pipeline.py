@@ -16,6 +16,7 @@ from yoke.ingestion.enrichment import enrich_chunks
 from yoke.ingestion.models import IngestResult
 from yoke.ingestion.store import build_bm25_index, init_db, store_document
 from yoke.models import get_model_client
+from yoke.tracing import flush_tracing, init_tracing
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,10 @@ async def ingest_directory(
     summary_model = summary_model or settings.summary_model
     embedding_model = embedding_model or settings.embedding_model
 
+    langfuse = init_tracing()
+
     provider, model_name = parse_model_spec(summary_model)
-    summary_client = get_model_client(provider, model_name)
+    summary_client = get_model_client(provider, model_name, langfuse=langfuse)
 
     # Determine concurrency based on provider
     enrichment_concurrency = 3 if provider == "ollama" else 10
@@ -147,6 +150,8 @@ async def ingest_directory(
     manifest_path = db_path.with_name("manifest.json")
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     logger.info("Manifest written to %s", manifest_path)
+
+    flush_tracing(langfuse)
 
     return IngestResult(
         documents_processed=docs_processed,
