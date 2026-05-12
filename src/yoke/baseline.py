@@ -1,13 +1,12 @@
 import argparse
 from pathlib import Path
 
-import anthropic
 from dotenv import load_dotenv
 
+from yoke.config import YokeSettings, generate as llm_generate
 from yoke.tracing import flush_tracing, init_tracing, set_current_trace_id
 
-
-MODEL = "claude-sonnet-4-20250514"
+GENERATION_MODEL = YokeSettings().generation_model
 
 SYSTEM_PROMPT = (
     "Answer the question using only the provided context. "
@@ -17,7 +16,8 @@ SYSTEM_PROMPT = (
 )
 
 
-def ask(question: str, docs_dir: Path) -> str:
+def ask(question: str, docs_dir: Path, *, model: str = GENERATION_MODEL) -> str:
+    """Answer a question using context-stuffing from all docs in a directory."""
     paths = sorted(
         p for p in docs_dir.iterdir()
         if p.suffix in (".md", ".txt") and p.is_file()
@@ -33,29 +33,15 @@ def ask(question: str, docs_dir: Path) -> str:
         trace = langfuse.trace(name="baseline-ask")
         set_current_trace_id(trace.id)
 
-    client = anthropic.Anthropic()
     user_content = f"Context:\n{context}\n\nQuestion: {question}"
-    message = client.messages.create(
-        model=MODEL,
-        temperature=0,
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_content}],
-    )
-    answer = message.content[0].text
+    answer = llm_generate(model, user_content, system=SYSTEM_PROMPT)
 
     if trace is not None:
         trace.generation(
             name="baseline-llm",
-            model=MODEL,
+            model=model,
             input={"prompt": user_content, "system": SYSTEM_PROMPT},
-        ).end(
-            output=answer,
-            usage={
-                "prompt_tokens": message.usage.input_tokens,
-                "completion_tokens": message.usage.output_tokens,
-            },
-        )
+        ).end(output=answer)
 
     flush_tracing(langfuse)
     return answer

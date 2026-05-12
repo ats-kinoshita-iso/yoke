@@ -48,3 +48,4 @@ asyncio_mode = "auto"
 [project.scripts]
 yoke-baseline = "yoke.baseline:main"
 yoke-ingest = "yoke.ingestion.pipeline:main"
+yoke-query = "yoke.query:main"
